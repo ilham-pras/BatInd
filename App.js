@@ -1,46 +1,35 @@
-import React from 'react';
-import {ScrollView, StyleSheet,  Text, TextInput, View, Image, ImageBackground, TouchableOpacity} from 'react-native';
-import {Notification, Receipt21, ArrowCircleRight2, Home2, User, Category2, SearchNormal1, Star1} from 'iconsax-react-native';
-import { fontType, colors } from './src/theme';
+import React, {useState} from 'react';
+import {ScrollView, StyleSheet,  Text, TextInput, View, ImageBackground, TouchableOpacity} from 'react-native';
+import {Notification, SearchNormal1} from 'iconsax-react-native';
+import MenuBar from './src/components/MenuBar';
+import { ContentList } from './data';
+import { ListPopuler } from './src/components';
 
 export default function App() {
+  const [searchText, setSearchText] = useState('');
+  const handleSearchPress = (text) => {
+    setSearchText(text);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
           <Text style={styles.title}>BatInd</Text>
-          <Notification color={colors.brown()} variant="Linear" size={28} />
+          <Notification color={'rgb(148, 108, 82)'} variant="Linear" size={28} />
         </View>
         <View style={styles.searchBar}>
           <View style={styles.searchIcon}>
-            <SearchNormal1 color={colors.white()} variant="Linear" size={22} />
+            <SearchNormal1 color={'rgb(255, 255, 255)'} variant="Linear" size={22} />
           </View>
           <View style={styles.searchText}>
-            <TextInput placeholder="Cari Batik..."/>
+            <TextInput value={searchText} onChangeText={handleSearchPress} placeholder="Cari Batik..."/>
           </View>
         </View>
       </View>
       <View style={styles.cardContainer}>
         <ListBlog />
       </View>
-      <View style={navbar.container}>
-        <TouchableOpacity style={navbar.item}>
-          <Home2 color={colors.brown()} variant="Bold" size={20} />
-          <Text style={navbar.text}>Beranda</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={navbar.item}>
-          <Category2 color={colors.brown()} variant="Linear" size={20} />
-          <Text style={navbar.text}>Kategori</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={navbar.item}>
-          <Star1 color={colors.brown()} variant="Linear" size={20} />
-          <Text style={navbar.text}>Favorit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={navbar.item}>
-          <User color={colors.brown()} variant="Linear" size={20} />
-          <Text style={navbar.text}>Profil</Text>
-        </TouchableOpacity>
-      </View>
+      <MenuBar />
     </View>
   );
 }
@@ -48,11 +37,11 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.brown(),
+    backgroundColor: 'rgb(148, 108, 82)',
   },
   cardContainer: {
     flex: 1,
-    backgroundColor: colors.lightGrey(),
+    backgroundColor: 'rgb(228, 228, 228)',
     borderRadius: 20,
     margin: 6,
   },
@@ -64,63 +53,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerContainer: {
-    backgroundColor: colors.lightGrey(),
-    borderBottomRightRadius:20,
-    borderBottomLeftRadius:20,
+    backgroundColor: 'rgb(228, 228, 228)',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
   },
   title: {
-    fontSize: 32,
-    fontFamily: fontType['Pjs-ExtraBold'],
-    color: colors.brown(),
+    fontSize: 30,
+    fontFamily: 'Poppins-ExtraBold',
+    color: 'rgb(148, 108, 82)',
   },
   searchBar: {
     flexDirection: 'row',
-    height:40,
-    marginVertical: 10,
+    height: 40,
+    marginBottom: 8,
     marginHorizontal: 24,
     borderRadius: 50,
-    backgroundColor: colors.white(),
+    backgroundColor: 'rgb(255, 255, 255)',
     elevation: 3,
   },
   searchIcon: {
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     borderRadius: 50,
-    backgroundColor: colors.brown(),
+    backgroundColor: 'rgb(148, 108, 82)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   searchText: {
     flex: 1,
-    paddingLeft:4,
-    paddingRight:12,
+    paddingLeft: 4,
+    paddingRight: 12,
   },
 });
-const navbar = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    marginBottom: 5,
-    marginHorizontal: 5,
-    borderRadius:15,
-    backgroundColor: colors.white(),
-    elevation:3,
-  },
-  item: {
-    fontFamily: fontType['Pjs-SemiBold'],
-    color: colors.brown(),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontFamily: fontType['Pjs-SemiBold'],
-    fontSize: 12,
-    color: colors.brown(),
-    paddingTop:2,
-  },
-})
 
 
 const ListBlog = () => {
@@ -130,98 +93,13 @@ const ListBlog = () => {
         <Text style={category.title}>Batik Populer</Text>
       </View>
       <View style={styles.listBlog}>
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          contentContainerStyle={{gap: 15}}>
-          <View style={{...itemHorizontal.cardItem, marginLeft: 12}}>
-            <View style={cover.cardImage}>
-              <ImageBackground
-                style={itemHorizontal.cardImage}
-                resizeMode="cover"
-                imageStyle={{borderRadius: 15}}
-                source={require('./src/assets/img/parang-barong.jpg')}>
-                <View style={itemHorizontal.cardContent}>
-                  <View style={itemHorizontal.cardInfo}>
-                    <Text style={itemHorizontal.cardTitle}>Batik Parang Motif Barong</Text>
-                    <Text style={itemHorizontal.cardText}>
-                      Motif ini memiliki makna pengendalian diri dalam dinamika usaha yang terus-menerus,
-                      kebijaksanaan dalam gerak, dan kehati-hatian dalam bertindak.
-                    </Text>
-                  </View>
-                  <View style={itemHorizontal.cardPost}>
-                    <Text style={itemHorizontal.cardText}>Aug 18, 2023</Text> 
-                  </View>
-                </View>
-              </ImageBackground>
-              <View style={cover.cardInfo}>
-                <Text style={cover.cardText}>Selengkapnya</Text>
-                <View style={cover.cardIcon}>
-                  <ArrowCircleRight2 color={colors.white()} variant="Linear" size={28} />
-                </View>
-              </View>
-            </View>
-          </View>
-          <View style={itemHorizontal.cardItem}>
-            <View style={cover.cardImage}>
-              <ImageBackground
-                style={itemHorizontal.cardImage}
-                resizeMode="cover"
-                imageStyle={{borderRadius: 15}}
-                source={require('./src/assets/img/cuwiri.jpg')}>
-                <View style={itemHorizontal.cardContent}>
-                  <View style={itemHorizontal.cardInfo}>
-                    <Text style={itemHorizontal.cardTitle}>Batik Cuwiri</Text>
-                    <Text style={itemHorizontal.cardText}>
-                      Batik cuwiri memiliki arti kecil-kecil, yang diharapkan pemakainya terlihat pantas dan dihormati oleh masyarakat.
-                      Batik ini biasa digunakan pada saat acara mitoni, sebuah tradisi memperingati tujuh bulan usia bayi.
-                    </Text>
-                  </View>
-                  <View style={itemHorizontal.cardPost}>
-                    <Text style={itemHorizontal.cardText}>May 10, 2023</Text> 
-                  </View>
-                </View>
-              </ImageBackground>
-              <View style={cover.cardInfo}>
-                <Text style={cover.cardText}>Selengkapnya</Text>
-                <View style={cover.cardIcon}>
-                  <ArrowCircleRight2 color={colors.white()} variant="Linear" size={28} />
-                </View>
-              </View>
-            </View>
-          </View>
-          <View style={{...itemHorizontal.cardItem, marginRight: 12}}>
-            <View style={cover.cardImage}>
-              <ImageBackground
-                style={itemHorizontal.cardImage}
-                resizeMode="cover"
-                imageStyle={{borderRadius: 15}}
-                source={require('./src/assets/img/sekar-jagad.jpg')}>
-                <View style={itemHorizontal.cardContent}>
-                  <View style={itemHorizontal.cardInfo}>
-                    <Text style={itemHorizontal.cardTitle}>Batik Sekar Jagad</Text>
-                    <Text style={itemHorizontal.cardText}>
-                      Motif ini mengandung makna aneka rupa keindahan yang terjalin menjadi satu atau melingkupi keseluruhan keindahan.
-                      Ada pula yang beranggapan bahwa motif ini melambangkan keragaman di seluruh dunia.
-                    </Text>
-                  </View>
-                  <View style={itemHorizontal.cardPost}>
-                    <Text style={itemHorizontal.cardText}>Sep 26, 2023</Text>
-                  </View>
-                </View>
-              </ImageBackground>
-              <View style={cover.cardInfo}>
-                <Text style={cover.cardText}>Selengkapnya</Text>
-                <View style={cover.cardIcon}>
-                  <ArrowCircleRight2 color={colors.white()} variant="Linear" size={28} />
-                </View>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
+        <ListPopuler data={ContentList} />
 
         <View style={category.item}>
           <Text style={category.title}>Kategori</Text>
+          <TouchableOpacity style={category.itemText}>
+            <Text style={category.text}>Lihat Semua</Text>
+          </TouchableOpacity>
         </View>
         <View style={itemVertical.listCard}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4}}>
@@ -232,10 +110,10 @@ const ListBlog = () => {
                 imageStyle={{borderRadius: 15}}
                 source={require('./src/assets/img/parang1.jpg')}>
                 <View style={itemVertical.cardContent}>
-                  <View style={itemVertical.cardInfo}>
+                  <TouchableOpacity style={itemVertical.cardInfo}>
                     <Text style={itemVertical.cardTitle}>Batik Parang</Text>
                     <Text style={itemVertical.cardText}>Memiliki 10 Jenis Motif</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </ImageBackground>
             </View>
@@ -246,10 +124,10 @@ const ListBlog = () => {
                 imageStyle={{borderRadius: 15}}
                 source={require('./src/assets/img/lasem.jpg')}>
                 <View style={itemVertical.cardContent}>
-                  <View style={itemVertical.cardInfo}>
+                  <TouchableOpacity style={itemVertical.cardInfo}>
                     <Text style={itemVertical.cardTitle}>Batik Lasem</Text>
                     <Text style={itemVertical.cardText}>Memiliki 10 Jenis Motif</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </ImageBackground>
             </View>
@@ -262,10 +140,10 @@ const ListBlog = () => {
                 imageStyle={{borderRadius: 15}}
                 source={require('./src/assets/img/sogan.jpg')}>
                 <View style={itemVertical.cardContent}>
-                  <View style={itemVertical.cardInfo}>
+                  <TouchableOpacity style={itemVertical.cardInfo}>
                     <Text style={itemVertical.cardTitle}>Batik Sogan</Text>
                     <Text style={itemVertical.cardText}>Memiliki 10 Jenis Motif</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </ImageBackground>
             </View>
@@ -276,10 +154,10 @@ const ListBlog = () => {
                 imageStyle={{borderRadius: 15}}
                 source={require('./src/assets/img/megamendung.jpg')}>
                 <View style={itemVertical.cardContent}>
-                  <View style={itemVertical.cardInfo}>
+                  <TouchableOpacity style={itemVertical.cardInfo}>
                     <Text style={itemVertical.cardTitle}>Batik Megamendung</Text>
                     <Text style={itemVertical.cardText}>Memiliki 5 Jenis Motif</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </ImageBackground>
             </View>
@@ -292,10 +170,10 @@ const ListBlog = () => {
                 imageStyle={{borderRadius: 15}}
                 source={require('./src/assets/img/tujuh-rupa.jpg')}>
                 <View style={itemVertical.cardContent}>
-                  <View style={itemVertical.cardInfo}>
+                  <TouchableOpacity style={itemVertical.cardInfo}>
                     <Text style={itemVertical.cardTitle}>Batik Tujuh Rupa</Text>
                     <Text style={itemVertical.cardText}>Memiliki 7 Jenis Motif</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </ImageBackground>
             </View>
@@ -306,10 +184,10 @@ const ListBlog = () => {
                 imageStyle={{borderRadius: 15}}
                 source={require('./src/assets/img/kawung.jpg')}>
                 <View style={itemVertical.cardContent}>
-                  <View style={itemVertical.cardInfo}>
+                  <TouchableOpacity style={itemVertical.cardInfo}>
                     <Text style={itemVertical.cardTitle}>Batik Kawung</Text>
                     <Text style={itemVertical.cardText}>Memiliki 5 Jenis Motif</Text>
-                  </View>
+                  </TouchableOpacity>
                 </View>
               </ImageBackground>
             </View>
@@ -320,99 +198,35 @@ const ListBlog = () => {
   );
 };
 
+
 const category = StyleSheet.create({
   item: {
+    flexDirection: 'row',
     marginHorizontal: 12,
-    marginVertical: 8,
+    marginTop: 8,
   },
   title: {
-    fontFamily:fontType['Pjs-Bold'],
+    fontFamily: 'Poppins-Bold',
     fontSize: 20,
-    color: colors.brown(),
+    color: 'rgb(148, 108, 82)',
+    marginTop: 6,
+  },
+  itemText: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  text: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 13,
+    color: 'rgb(0, 0, 200)',
     marginTop: 8,
   },
 });
-const cover = StyleSheet.create({
-  cardImage: {
-    width: '100%',
-    height: 230,
-    borderRadius: 15,
-    backgroundColor: colors.brown(),
-  },
-  cardInfo: {
-    flexDirection: 'row',
-    justifyContent:'flex-end',
-    alignItems: 'center ',
-    paddingHorizontal: 12,
-    paddingTop: 38,
-  },
-  cardText: {
-    paddingHorizontal: 12,
-    paddingBottom: 3,
-    fontFamily: fontType['Pjs-Bold'],
-    fontSize: 20,
-    color: colors.white(),
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-  },
-  cardIcon: {
-    paddingHorizontal: 12,
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-  },
-});
-const itemHorizontal = StyleSheet.create({
-  cardItem: {
-    width: 280,
-  },
-  cardImage: {
-    width: '100%',
-    height: 180,
-    borderRadius: 5,
-  },
-  cardContent: {
-    flex:1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 12,
-  },
-  cardInfo: {
-    flex:1,
-    justifyContent: 'flex-start',
-  },
-  cardTitle: {
-    fontFamily: fontType['Pjs-Bold'],
-    fontSize: 16,
-    color: colors.white(),
-    textShadowColor: colors.black(),
-    textShadowRadius: 2,
-    paddingBottom: 8,
-  },
-  cardText: {
-    flex: 1,
-    fontFamily: fontType['Pjs-Medium'],
-    fontSize: 10,
-    color: colors.white(),
-    textShadowColor: colors.black(),
-    textShadowRadius: 2,
-  },
-  cardPost: {
-    flex:1,
-    alignItems: 'flex-end',
-    padding: 12,
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-  },
-  cardIcon: {
-    alignItems: 'flex-start',
-  },
-});
+
 const itemVertical = StyleSheet.create({
   listCard: {
-    flex:1,
+    flex: 1,
     paddingHorizontal: 12,
     gap: 15,
   },
@@ -429,25 +243,26 @@ const itemVertical = StyleSheet.create({
   cardContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     marginTop: 140,
     borderRadius: 10,
     height: '30%',
-    backgroundColor: colors.brown(0.92),
+    backgroundColor: 'rgba(148, 108, 82, 0.92)',
   },
   cardInfo: {
     justifyContent: 'flex-end',
     height: '100%',
-    gap: 4,
   },
   cardTitle: {
-    fontFamily: fontType['Pjs-Bold'],
-    fontSize: 13,
-    color: colors.white(),
+    fontFamily: 'Poppins-Bold',
+    fontSize: 12.5,
+    color: 'rgb(255, 255, 255)',
+    paddingBottom: 4,
   },
   cardText: {
-    fontFamily: fontType['Pjs-Medium'],
+    fontFamily: 'Poppins-Medium',
     fontSize: 11,
-    color: colors.white(),
+    color: 'rgb(255, 255, 255)',
   },
 });
