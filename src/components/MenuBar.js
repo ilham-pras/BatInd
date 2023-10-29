@@ -6,7 +6,7 @@ const MenuBar = () => {
   return (
     <View style={navbar.container}>
       <TouchableOpacity style={navbar.item}>
-        <Home2 color='rgb(148, 108, 82)' variant="Bold" size={20} />
+        <Home2 color='rgb(148, 108, 82)' variant="Linear" size={20} />
         <Text style={navbar.text}>Beranda</Text>
       </TouchableOpacity>
       <TouchableOpacity style={navbar.item}>
@@ -19,7 +19,7 @@ const MenuBar = () => {
       </TouchableOpacity>
       <TouchableOpacity style={navbar.item}>
         <User color='rgb(148, 108, 82)' variant="Linear" size={20} />
-        <Text style={navbar.text}>Profil</Text>
+        <Text style={navbar.text}>Profile</Text>
       </TouchableOpacity>
     </View>
   );

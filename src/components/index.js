@@ -1,2 +1,4 @@
 import ListPopuler from './ListPopuler'
-export {ListPopuler}
+import ItemKategori from './ItemKategori'
+import ItemFavorit from './ItemFavorit'
+export {ListPopuler, ItemKategori, ItemFavorit}

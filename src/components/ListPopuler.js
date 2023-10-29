@@ -18,7 +18,7 @@ const BatikPopuler = ({item, variant, onPress}) => {
             </View>
             <View style={itemHorizontal.cardIcon}>
               <TouchableOpacity onPress={onPress}>
-                <Star1 color={'rgb(255, 255, 255)'} variant={variant} size={20} />
+                <Star1 color={'rgb(255, 255, 0)'} variant={variant} size={20} />
               </TouchableOpacity>
             </View>
             <View style={itemHorizontal.cardPost}>
@@ -62,7 +62,7 @@ const ListPopuler = ({ data }) => {
       keyExtractor={item => item.id.toString()}
       renderItem={item => renderItem({...item})}
       ItemSeparatorComponent={() => <View style={{width: 15}} />}
-      contentContainerStyle={{paddingHorizontal: 24}}
+      contentContainerStyle={{paddingHorizontal: 12}}
       horizontal
       showsHorizontalScrollIndicator={false}
     />
