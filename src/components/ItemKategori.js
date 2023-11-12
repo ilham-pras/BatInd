@@ -27,13 +27,13 @@ const styles = StyleSheet.create({
   },
   pic: {
     width: 110,
-    height: 180,
+    height: 150,
     borderRadius: 10,
   },
   cardContainer: {
     flex: 1,
     marginHorizontal: 6,
-    marginVertical: 12,
+    marginVertical: 10,
   },
   cardItem: {
     flexDirection: 'row',
@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
     marginRight: 108,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Poppins-Bold',
     color: 'rgb(148, 108, 82)',
   },
   cardText: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: 'Poppins-Medium',
     color: 'rgb(148, 108, 82)',
     textAlign: 'justify',

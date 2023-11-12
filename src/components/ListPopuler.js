@@ -1,8 +1,21 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
 import { ArrowCircleRight2, Star1 } from 'iconsax-react-native';
+import {useNavigation} from '@react-navigation/native';
+
+const truncateTextByWords = (text, maxWords) => {
+  if (text) {
+    const words = text.split(' ');
+    if (words.length > maxWords) {
+      return words.slice(0, maxWords).join(' ') + ' ...';
+    }
+    return text;
+  }
+  return '';
+}
 
 const BatikPopuler = ({item, variant, onPress}) => {
+  const navigation = useNavigation();
   return (
     <View style={itemHorizontal.cardItem}>
       <View style={cover.cardImage}>
@@ -14,7 +27,7 @@ const BatikPopuler = ({item, variant, onPress}) => {
           <View style={itemHorizontal.cardContent}>
             <View style={itemHorizontal.cardInfo}>
               <Text style={itemHorizontal.cardTitle}>{item.title}</Text>
-              <Text style={itemHorizontal.cardText}>{item.info}</Text>
+              <Text style={itemHorizontal.cardText}>{truncateTextByWords(item.info, 20)}</Text>
             </View>
             <View style={itemHorizontal.cardIcon}>
               <TouchableOpacity onPress={onPress}>
@@ -26,7 +39,7 @@ const BatikPopuler = ({item, variant, onPress}) => {
             </View>
           </View>
         </ImageBackground>
-        <TouchableOpacity style={cover.cardInfo}>
+        <TouchableOpacity style={cover.cardInfo} onPress={() => navigation.navigate('KontenDetail', {blogId: item.id})}>
           <Text style={cover.cardText}>Selengkapnya</Text>
           <View style={cover.cardIcon}>
             <ArrowCircleRight2 color={'rgb(255, 255, 255)'} variant="Linear" size={28} />
@@ -69,7 +82,6 @@ const ListPopuler = ({ data }) => {
   );
 };
 export default ListPopuler;
-
 
 const cover = StyleSheet.create({
   cardImage: {
@@ -133,6 +145,7 @@ const itemHorizontal = StyleSheet.create({
     flex: 1,
     fontFamily: 'Poppins-Medium',
     fontSize: 10,
+    textAlign: 'justify',
     color: 'rgb(255, 255, 255)',
     textShadowColor: 'rgb(0, 0, 0)',
     textShadowRadius: 2,

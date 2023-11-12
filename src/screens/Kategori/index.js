@@ -13,9 +13,6 @@ const KategoriScreen = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <TouchableOpacity>
-            <ArrowCircleLeft color={'rgb(148, 108, 82)'} variant="Linear" size={28} />
-          </TouchableOpacity>
           <Text style={styles.title}>Kategori</Text>
         </View>
         <View style={styles.searchBar}>
@@ -51,7 +48,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 30,
@@ -61,7 +58,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Poppins-ExtraBold',
     color: 'rgb(148, 108, 82)',
-    marginLeft: 85,
   },
   searchBar: {
     flexDirection: 'row',

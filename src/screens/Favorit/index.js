@@ -9,11 +9,8 @@ const Favorit = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.header}>
-          <TouchableOpacity>
-            <ArrowCircleLeft color={'rgb(148, 108, 82)'} variant="Linear" size={28} />
-          </TouchableOpacity>
           <Text style={styles.title}>Favorit</Text>
-          <TouchableOpacity>
+          <TouchableOpacity style={{ position: 'absolute', bottom: 20, right: 20,}}>
             <Add color={'rgb(148, 108, 82)'} variant="Linear" size={28} />
           </TouchableOpacity>
         </View>
@@ -43,13 +40,12 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 30,
-    marginBottom: 12,
+    paddingBottom: 12,
     elevation: 8,
-    paddingBottom: 4,
   },
   title: {
     fontSize: 22,

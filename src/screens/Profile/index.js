@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import {Edit, ArrowCircleLeft, InfoCircle, LogoutCurve, Setting2, MessageQuestion} from 'iconsax-react-native';
+import {ArrowCircleLeft, InfoCircle, LogoutCurve, Setting2, MessageQuestion} from 'iconsax-react-native';
 import { ProfileData } from '../../../data';
 import MenuBar from '../../components/MenuBar';
 
@@ -8,9 +8,6 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
-          <ArrowCircleLeft color={'rgb(148, 108, 82)'} variant="Linear" size={28} />
-        </TouchableOpacity>
         <Text style={styles.title}>Profile</Text>
       </View>
       <View style={styles.cardContainer}>
@@ -51,7 +48,6 @@ const Profile = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <MenuBar />
     </View>
   );
 };
@@ -66,15 +62,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.88)',
     borderRadius: 20,
-    margin: 6,
+    marginHorizontal: 6,
+    marginBottom: 6,
+    marginTop: 10,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgb(255, 255, 255)',
     paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingTop: 30,
+    paddingBottom: 22,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
   },
@@ -82,7 +80,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Poppins-ExtraBold',
     color: 'rgb(148, 108, 82)',
-    marginLeft: 110,
   },
   cardItem: {
     paddingHorizontal: 22,
@@ -94,6 +91,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
 });
+
 const profile = StyleSheet.create({
   pic: {
     width: 110,

@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, ImageBackground, TouchableOpacity} from 'react-native';
 import {Star1, Clock, Location} from 'iconsax-react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const truncateTextByWords = (text, maxWords) => {
   if (text) {
@@ -14,8 +15,9 @@ const truncateTextByWords = (text, maxWords) => {
 }
 
 const ItemFavorit = ({item, onPress, variant}) => {
+  const navigation = useNavigation();
   return (
-      <TouchableOpacity style={styles.cardItem} onPress={()=>{}}>
+      <TouchableOpacity style={styles.cardItem} onPress={()=>navigation.navigate('KontenDetail', {blogId: item.id})}>
         <ImageBackground
         style={styles.cardImage}
         resizeMode="cover"

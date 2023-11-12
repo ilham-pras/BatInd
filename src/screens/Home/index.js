@@ -4,6 +4,7 @@ import {Notification, SearchNormal1} from 'iconsax-react-native';
 import MenuBar from '../../components/MenuBar';
 import { ContentList } from '../../../data';
 import { ListPopuler } from '../../components';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Home() {
   const [searchText, setSearchText] = useState('');
@@ -29,7 +30,7 @@ export default function Home() {
       <View style={styles.cardContainer}>
         <ListBlog />
       </View>
-      <MenuBar />
+      {/* <MenuBar /> */}
     </View>
   );
 }
@@ -43,7 +44,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgb(228, 228, 228)',
     borderRadius: 20,
-    margin: 6,
+    marginHorizontal: 6,
+    marginBottom: 6,
+    marginTop: 10,
   },
   header: {
     paddingHorizontal: 24,
@@ -87,6 +90,7 @@ const styles = StyleSheet.create({
 
 
 const ListBlog = () => {
+  const navigation = useNavigation();
   return (
     <ScrollView>
       <View style={category.item}>
@@ -97,7 +101,7 @@ const ListBlog = () => {
 
         <View style={category.item}>
           <Text style={category.title}>Kategori</Text>
-          <TouchableOpacity style={category.itemText}>
+          <TouchableOpacity style={category.itemText}  onPress={()=>navigation.navigate('Kategori')}>
             <Text style={category.text}>Lihat Semua</Text>
           </TouchableOpacity>
         </View>
