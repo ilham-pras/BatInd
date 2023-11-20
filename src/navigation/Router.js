@@ -1,11 +1,12 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, Kategori, Favorit, Profile, KontenDetail} from '../screens';
+import {Home, Kategori, Favorit, Profile, KontenDetail, SplashScreen} from '../screens';
 import {Home2, Category2, Star1, User} from 'iconsax-react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
 function MainApp() {
   return (
     <Tab.Navigator
@@ -87,9 +88,15 @@ function MainApp() {
     </Tab.Navigator>
   );
 }
+
 const Router = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="SplashScreen">
+      <Stack.Screen
+        name="SplashScreen"
+        component={SplashScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name="MainApp"
         component={MainApp}

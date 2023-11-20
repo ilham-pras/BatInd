@@ -3,4 +3,5 @@ import Kategori from "./Kategori";
 import Favorit from "./Favorit";
 import Profile from "./Profile";
 import KontenDetail from "./KontenDetail";
-export {Home, Kategori, Favorit, Profile, KontenDetail}
+import SplashScreen from "./SplashScreen";
+export {Home, Kategori, Favorit, Profile, KontenDetail, SplashScreen}
