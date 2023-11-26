@@ -1,8 +1,14 @@
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {Add, ArrowCircleLeft} from 'iconsax-react-native';
-import { ContentList } from '../../../data';
-import { ItemFavorit } from '../../components';
+import {ContentList} from '../../../data';
+import {ItemFavorit} from '../../components';
 
 const Favorit = () => {
   return (
@@ -10,16 +16,17 @@ const Favorit = () => {
       <View style={styles.headerContainer}>
         <View style={styles.header}>
           <Text style={styles.title}>Favorit</Text>
-          <TouchableOpacity style={{ position: 'absolute', bottom: 20, right: 20,}}>
+          <TouchableOpacity
+            style={{position: 'absolute', bottom: 20, right: 20}}>
             <Add color={'rgb(148, 108, 82)'} variant="Linear" size={28} />
           </TouchableOpacity>
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{paddingHorizontal:16, gap:10, paddingVertical:10}}>
-        {ContentList.map((item, index) => (
-          <ItemFavorit item={item} key={index} />
-        ))}
+        <View style={{paddingHorizontal: 6, gap: 10, paddingVertical: 10}}>
+          {ContentList.map((item, index) => (
+            <ItemFavorit item={item} key={index} />
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -37,6 +44,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
+    elevation: 4,
   },
   header: {
     flexDirection: 'row',
@@ -45,7 +53,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 30,
     paddingBottom: 12,
-    elevation: 8,
+    elevation: 4,
   },
   title: {
     fontSize: 22,

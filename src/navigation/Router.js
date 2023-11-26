@@ -1,7 +1,15 @@
 import React from 'react';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Home, Kategori, Favorit, Profile, KontenDetail, SplashScreen} from '../screens';
+import {
+  Home,
+  Kategori,
+  Favorit,
+  Profile,
+  KontenDetail,
+  SplashScreen,
+  AddBlogForm,
+} from '../screens';
 import {Home2, Category2, Star1, User} from 'iconsax-react-native';
 
 const Tab = createBottomTabNavigator();
@@ -95,7 +103,7 @@ const Router = () => {
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreen}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="MainApp"
@@ -106,11 +114,23 @@ const Router = () => {
         name="KontenDetail"
         component={KontenDetail}
         options={{
-          headerShown: false, 
+          headerShown: false,
           animationEnabled: true,
           animationTypeForReplace: 'pop',
           gestureEnabled: true,
-          gestureDirection : 'horizontal',
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="AddBlog"
+        component={AddBlogForm}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
           ...TransitionPresets.SlideFromRightIOS,
         }}
       />

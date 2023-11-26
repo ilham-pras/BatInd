@@ -3,8 +3,10 @@ import {StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity} from 'r
 import {ArrowCircleLeft, SearchNormal1} from 'iconsax-react-native';
 import { KategoriList } from '../../../data';
 import { ItemKategori } from '../../components';
+import { useNavigation } from "@react-navigation/native";
 
 const KategoriScreen = () => {
+  const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
   const handleSearchPress = (text) => {
     setSearchText(text);

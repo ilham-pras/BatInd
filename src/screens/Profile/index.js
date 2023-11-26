@@ -1,10 +1,19 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import {ArrowCircleLeft, InfoCircle, LogoutCurve, Setting2, MessageQuestion} from 'iconsax-react-native';
-import { ProfileData } from '../../../data';
+import {
+  ArrowCircleLeft,
+  InfoCircle,
+  LogoutCurve,
+  Setting2,
+  MessageQuestion,
+  AddSquare,
+} from 'iconsax-react-native';
+import {ProfileData} from '../../../data';
 import MenuBar from '../../components/MenuBar';
+import {useNavigation} from '@react-navigation/native';
 
 const Profile = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -18,31 +27,59 @@ const Profile = () => {
             <Text style={profile.info}>{ProfileData.email}</Text>
           </View>
         </View>
-          <TouchableOpacity style={profile.editProfile}>
-            <Text style={profile.textEdit}>Edit Profile</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={profile.editProfile}>
+          <Text style={profile.textEdit}>Edit Profile</Text>
+        </TouchableOpacity>
         <View style={styles.cardItem}>
+          <TouchableOpacity
+            style={styles.cardContent}
+            onPress={() => navigation.navigate('AddBlog')}>
+            <View style={{paddingRight: 16}}>
+              <AddSquare
+                color={'rgb(148, 108, 82)'}
+                variant="Linear"
+                size={24}
+              />
+            </View>
+            <Text style={profile.text}>Postingan Baru</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.cardContent}>
             <View style={{paddingRight: 16}}>
-              <MessageQuestion color={'rgb(148, 108, 82)'} variant="Linear" size={24} />
+              <MessageQuestion
+                color={'rgb(148, 108, 82)'}
+                variant="Linear"
+                size={24}
+              />
             </View>
             <Text style={profile.text}>Help & FAQ</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cardContent}>
             <View style={{paddingRight: 16}}>
-              <InfoCircle color={'rgb(148, 108, 82)'} variant="Linear" size={24} />
+              <InfoCircle
+                color={'rgb(148, 108, 82)'}
+                variant="Linear"
+                size={24}
+              />
             </View>
             <Text style={profile.text}>About</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cardContent}>
             <View style={{paddingRight: 16}}>
-              <Setting2 color={'rgb(148, 108, 82)'} variant="Linear" size={24} />
+              <Setting2
+                color={'rgb(148, 108, 82)'}
+                variant="Linear"
+                size={24}
+              />
             </View>
             <Text style={profile.text}>Pengaturan</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cardContent}>
             <View style={{paddingRight: 16}}>
-              <LogoutCurve color={'rgb(148, 108, 82)'} variant="Linear" size={24} />
+              <LogoutCurve
+                color={'rgb(148, 108, 82)'}
+                variant="Linear"
+                size={24}
+              />
             </View>
             <Text style={profile.text}>Log Out</Text>
           </TouchableOpacity>
@@ -57,7 +94,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgb(148, 108, 82)',
-},
+  },
   cardContainer: {
     flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.88)',
@@ -67,14 +104,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   header: {
+    backgroundColor: 'rgb(255, 255, 255)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgb(255, 255, 255)',
     paddingHorizontal: 20,
     paddingTop: 30,
     paddingBottom: 22,
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
+    elevation: 4,
   },
   title: {
     fontSize: 22,
