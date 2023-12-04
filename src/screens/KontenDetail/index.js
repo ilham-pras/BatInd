@@ -1,18 +1,29 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, Image, ScrollView, TouchableOpacity} from 'react-native';
-import {ArrowCircleLeft, Lovely, Star1, Location, Share, More} from 'iconsax-react-native';
+import React, {useState, useRef, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageBackground,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {
+  ArrowCircleLeft,
+  Lovely,
+  Star1,
+  Location,
+  Share,
+  More,
+} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
-import { ContentList } from '../../../data';
-
-const formatNumber = number => {
-  if (number >= 1000000) {
-    return (number / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-  }
-  if (number >= 1000) {
-    return (number / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-  }
-  return number.toString();
-};
+import FastImage from 'react-native-fast-image';
+import {ContentList} from '../../../data';
+import {formatNumber} from '../../utils/formatNumber';
+import {formatDate} from '../../utils/formatDate';
+import axios from 'axios';
+import ActionSheet from 'react-native-actions-sheet';
 
 const KontenDetail = ({route}) => {
   const {blogId} = route.params;
@@ -20,7 +31,54 @@ const KontenDetail = ({route}) => {
     liked: {variant: 'Linear', color: 'rgb(0, 0, 0)'},
     bookmarked: {variant: 'Linear', color: 'rgb(0, 0, 0)'},
   });
-  const selectedBlog = ContentList.find(blog => blog.id === blogId);
+  const [selectedBlog, setSelectedBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const actionSheetRef = useRef(null);
+  const openActionSheet = () => {
+    actionSheetRef.current?.show();
+  };
+  const closeActionSheet = () => {
+    actionSheetRef.current?.hide();
+  };
+
+  useEffect(() => {
+    getBlogById();
+  }, [blogId]);
+
+  //fungsi mengambil data
+  const getBlogById = async () => {
+    try {
+      const response = await axios.get(
+        `https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog/${blogId}`,
+      );
+      setSelectedBlog(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const navigateEdit = () => {
+    closeActionSheet();
+    navigation.navigate('EditBlog', {blogId});
+  };
+  //fungsi hapus data
+  const handleDelete = async () => {
+    await axios
+      .delete(
+        `https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog/${blogId}`,
+      )
+      .then(() => {
+        closeActionSheet();
+        navigation.navigate('Profile');
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+  // const selectedBlog = ContentList.find(blog => blog.id === blogId);
   const navigation = useNavigation();
   const toggleIcon = iconName => {
     setIconStates(prevStates => ({
@@ -38,47 +96,141 @@ const KontenDetail = ({route}) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowCircleLeft color={'rgb(255, 255, 255)'} variant="Bold" size={28} />
+          <ArrowCircleLeft
+            color={'rgb(255, 255, 255)'}
+            variant="Bold"
+            size={28}
+          />
         </TouchableOpacity>
         <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
           <Share color={'rgb(255, 255, 255)'} variant="Linear" size={24} />
-          <More color={'rgb(255, 255, 255)'} variant="Linear" style={{transform: [{rotate: '90deg'}]}} />
+          <TouchableOpacity onPress={openActionSheet}>
+            <More
+              color={'rgb(255, 255, 255)'}
+              variant="Linear"
+              style={{transform: [{rotate: '90deg'}]}}
+            />
+          </TouchableOpacity>
         </View>
       </View>
+
       <View>
-        <Image style={styles.image} source={selectedBlog.image} />
+        <Image style={styles.image} source={{uri: selectedBlog?.image}} />
         <View style={styles.badgeContainer}>
           <View style={styles.categoryBadge}>
-          <TouchableOpacity onPress={() => toggleIcon('liked')}>
-            <Lovely color={iconStates.liked.color} variant={iconStates.liked.variant} size={20} />
-          </TouchableOpacity>
-          <Text style={styles.info}>
-            {formatNumber(selectedBlog.totalLikes)}
-          </Text>
-        </View>
-        <View style={styles.categoryBadge}>
-          <TouchableOpacity onPress={() => toggleIcon('bookmarked')}>
-            <Star1 color={iconStates.bookmarked.color} variant={iconStates.bookmarked.variant} size={20} />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity onPress={() => toggleIcon('liked')}>
+              <Lovely
+                color={iconStates.liked.color}
+                variant={iconStates.liked.variant}
+                size={20}
+              />
+            </TouchableOpacity>
+            <Text style={styles.info}>
+              {formatNumber(selectedBlog?.totalLikes)}
+            </Text>
+          </View>
+          <View style={styles.categoryBadge}>
+            <TouchableOpacity onPress={() => toggleIcon('bookmarked')}>
+              <Star1
+                color={iconStates.bookmarked.color}
+                variant={iconStates.bookmarked.variant}
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
       <View style={styles.kontenContainer}>
-        <ScrollView 
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16, paddingBottom: 54, }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}>
-            <Text style={styles.category}>{selectedBlog.category}</Text>
-            <Text style={styles.date}>{selectedBlog.createdAt}</Text>
+        {loading ? (
+          <View
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <ActivityIndicator size={'large'} color={'rgb(148, 108, 82)'} />
           </View>
-          <View style={{ flexDirection: 'row', gap:4, paddingTop: 5,}}>
-            <Location color={'rgba(0, 0, 0, 0.6)'} variant="Linear" size={16} />
-            <Text style={styles.info}>{selectedBlog.location}</Text>
-          </View>
-          <Text style={styles.title}>{selectedBlog.title}</Text>
-          <Text style={styles.content}>{selectedBlog.info}</Text>
-        </ScrollView>
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 24,
+              paddingTop: 16,
+              paddingBottom: 54,
+            }}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={styles.category}>{selectedBlog?.category.name}</Text>
+              <Text style={styles.date}>
+                {formatDate(selectedBlog?.createdAt)}
+              </Text>
+            </View>
+            <View style={{flexDirection: 'row', gap: 4, paddingTop: 5}}>
+              <Location color={'rgba(0, 0, 0, 0.6)'} variant="Bold" size={16} />
+              <Text style={styles.info}>{selectedBlog?.location}</Text>
+            </View>
+            <Text style={styles.title}>{selectedBlog?.title}</Text>
+            <Text style={styles.content}>{selectedBlog?.info}</Text>
+          </ScrollView>
+        )}
+        <ActionSheet
+          ref={actionSheetRef}
+          containerStyle={{
+            borderTopLeftRadius: 25,
+            borderTopRightRadius: 25,
+          }}
+          indicatorStyle={{
+            width: 100,
+          }}
+          gestureEnabled={true}
+          defaultOverlayOpacity={0.3}>
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 10,
+            }}
+            onPress={navigateEdit}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                color: 'rgb(0, 0, 0)',
+                fontSize: 18,
+              }}>
+              Edit
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 10,
+            }}
+            onPress={handleDelete}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                color: 'rgb(0, 0, 0)',
+                fontSize: 18,
+              }}>
+              Delete
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 10,
+              marginBottom: 10,
+            }}
+            onPress={closeActionSheet}>
+            <Text
+              style={{
+                fontFamily: 'Poppins-Medium',
+                color: 'red',
+                fontSize: 18,
+              }}>
+              Cancel
+            </Text>
+          </TouchableOpacity>
+        </ActionSheet>
       </View>
     </View>
   );
@@ -115,8 +267,8 @@ const styles = StyleSheet.create({
   },
   categoryBadge: {
     flexDirection: 'row',
-    alignItems:'center',
-    gap:5,
+    alignItems: 'center',
+    gap: 5,
     backgroundColor: 'rgb(255, 255, 255)',
     paddingVertical: 3,
     paddingHorizontal: 16,
@@ -131,7 +283,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgb(228, 228, 228)',
     borderTopLeftRadius: 15,
-    borderTopRightRadius:15,
+    borderTopRightRadius: 15,
   },
   info: {
     color: 'rgba(0, 0, 0, 0.6)',

@@ -1,6 +1,13 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, FlatList } from 'react-native';
-import { ArrowCircleRight2, Star1 } from 'iconsax-react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import {ArrowCircleRight2, Star1} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 
 const truncateTextByWords = (text, maxWords) => {
@@ -12,7 +19,7 @@ const truncateTextByWords = (text, maxWords) => {
     return text;
   }
   return '';
-}
+};
 
 const BatikPopuler = ({item, variant, onPress}) => {
   const navigation = useNavigation();
@@ -20,14 +27,16 @@ const BatikPopuler = ({item, variant, onPress}) => {
     <View style={itemHorizontal.cardItem}>
       <View style={cover.cardImage}>
         <ImageBackground
-        style={itemHorizontal.cardImage}
-        resizeMode="cover"
-        imageStyle={{borderRadius: 15}}
-        source={item.image}>
+          style={itemHorizontal.cardImage}
+          resizeMode="cover"
+          imageStyle={{borderRadius: 15}}
+          source={item.image}>
           <View style={itemHorizontal.cardContent}>
             <View style={itemHorizontal.cardInfo}>
               <Text style={itemHorizontal.cardTitle}>{item.title}</Text>
-              <Text style={itemHorizontal.cardText}>{truncateTextByWords(item.info, 20)}</Text>
+              <Text style={itemHorizontal.cardText}>
+                {truncateTextByWords(item.info, 20)}
+              </Text>
             </View>
             <View style={itemHorizontal.cardIcon}>
               <TouchableOpacity onPress={onPress}>
@@ -39,10 +48,18 @@ const BatikPopuler = ({item, variant, onPress}) => {
             </View>
           </View>
         </ImageBackground>
-        <TouchableOpacity style={cover.cardInfo} onPress={() => navigation.navigate('KontenDetail', {blogId: item.id})}>
+        <TouchableOpacity
+          style={cover.cardInfo}
+          onPress={() =>
+            navigation.navigate('KontenDetail', {blogId: item.id})
+          }>
           <Text style={cover.cardText}>Selengkapnya</Text>
           <View style={cover.cardIcon}>
-            <ArrowCircleRight2 color={'rgb(255, 255, 255)'} variant="Linear" size={28} />
+            <ArrowCircleRight2
+              color={'rgb(255, 255, 255)'}
+              variant="Linear"
+              size={28}
+            />
           </View>
         </TouchableOpacity>
       </View>
@@ -50,7 +67,7 @@ const BatikPopuler = ({item, variant, onPress}) => {
   );
 };
 
-const ListPopuler = ({ data }) => {
+const ListPopuler = ({data}) => {
   const [bookmark, setBookmark] = useState([]);
   const toggleBookmark = itemId => {
     if (bookmark.includes(itemId)) {

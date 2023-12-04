@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,12 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import {ArrowCircleLeft} from 'iconsax-react-native';
+import {ArrowLeft} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 
-const AddBlogForm = () => {
+const EditBlogForm = ({route}) => {
+  const {blogId} = route.params;
   const dataCategory = [
     {id: 1, name: 'Parang'},
     {id: 2, name: 'Lasem'},
@@ -23,7 +24,7 @@ const AddBlogForm = () => {
     {id: 7, name: 'Cuwiri'},
     {id: 8, name: 'Sekar Jagad'},
   ];
-  const [blogData, setblogData] = useState({
+  const [blogData, setBlogData] = useState({
     title: '',
     info: '',
     location: '',
@@ -31,28 +32,55 @@ const AddBlogForm = () => {
     totalLikes: 0,
   });
   const handleChange = (key, value) => {
-    setblogData({
+    setBlogData({
       ...blogData,
       [key]: value,
     });
   };
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  ///fungsi upload
-  const handleUpload = async () => {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getBlogById();
+  }, [blogId]);
+
+  //fungsi mengambil data
+  const getBlogById = async () => {
+    try {
+      const response = await axios.get(
+        `https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog/${blogId}`,
+      );
+      setBlogData({
+        title: response.data.title,
+        info: response.data.info,
+        location: response.data.location,
+        category: {
+          id: response.data.category.id,
+          name: response.data.category.name,
+        },
+      });
+      setImage(response.data.image);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  //fungsi simpan edit form
+  const handleUpdate = async () => {
     setLoading(true);
     try {
       await axios
-        .post('https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog', {
-          title: blogData.title,
-          category: blogData.category,
-          image,
-          info: blogData.info,
-          location: blogData.location,
-          totalLikes: blogData.totalLikes,
-          createdAt: new Date(),
-        })
+        .put(
+          `https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog/${blogId}`,
+          {
+            title: blogData.title,
+            category: blogData.category,
+            image,
+            info: blogData.info,
+            location: blogData.location,
+            totalLikes: blogData.totalLikes,
+          },
+        )
         .then(function (response) {
           console.log(response);
         })
@@ -70,21 +98,18 @@ const AddBlogForm = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowCircleLeft
-            color={'rgb(148, 108, 82)'}
-            variant="Linear"
-            size={24}
-          />
+          <ArrowLeft color={'rgb(148, 108, 82)'} variant="Linear" size={24} />
         </TouchableOpacity>
         <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={styles.title}>Postingan Baru</Text>
+          <Text style={styles.title}>Edit Postingan</Text>
         </View>
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingHorizontal: 12,
+          paddingHorizontal: 24,
           paddingVertical: 10,
+          gap: 10,
         }}>
         <Text style={styles.text}>Judul</Text>
         <View style={textInput.cardItem}>
@@ -158,8 +183,8 @@ const AddBlogForm = () => {
         </View>
       </ScrollView>
       <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.button} onPress={handleUpload}>
-          <Text style={styles.buttonLabel}>Upload</Text>
+        <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+          <Text style={styles.buttonLabel}>Update</Text>
         </TouchableOpacity>
       </View>
       {loading && (
@@ -171,7 +196,7 @@ const AddBlogForm = () => {
   );
 };
 
-export default AddBlogForm;
+export default EditBlogForm;
 
 const styles = StyleSheet.create({
   container: {

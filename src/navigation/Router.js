@@ -9,6 +9,7 @@ import {
   KontenDetail,
   SplashScreen,
   AddBlogForm,
+  EditBlogForm,
 } from '../screens';
 import {Home2, Category2, Star1, User} from 'iconsax-react-native';
 
@@ -125,6 +126,18 @@ const Router = () => {
       <Stack.Screen
         name="AddBlog"
         component={AddBlogForm}
+        options={{
+          headerShown: false,
+          animationEnabled: true,
+          animationTypeForReplace: 'pop',
+          gestureEnabled: true,
+          gestureDirection: 'horizontal',
+          ...TransitionPresets.SlideFromRightIOS,
+        }}
+      />
+      <Stack.Screen
+        name="EditBlog"
+        component={EditBlogForm}
         options={{
           headerShown: false,
           animationEnabled: true,
