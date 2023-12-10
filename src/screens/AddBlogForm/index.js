@@ -2,17 +2,36 @@ import React, {useState} from 'react';
 import {
   View,
   Text,
+  Image,
   TextInput,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import {ArrowCircleLeft} from 'iconsax-react-native';
+import {ArrowCircleLeft, AddSquare, Add} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
-import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 
 const AddBlogForm = () => {
+  const handleImagePick = async () => {
+    ImagePicker.openPicker({
+      width: 1920,
+      height: 1080,
+      cropping: true,
+    })
+      .then(image => {
+        console.log(image);
+        setImage(image.path);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  const [loading, setLoading] = useState(false);
+
   const dataCategory = [
     {id: 1, name: 'Parang'},
     {id: 2, name: 'Lasem'},
@@ -36,35 +55,36 @@ const AddBlogForm = () => {
       [key]: value,
     });
   };
-  const [image, setImage] = useState(null);
-  const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  ///fungsi upload
+
   const handleUpload = async () => {
+    let filename = image.substring(image.lastIndexOf('/') + 1);
+    const extension = filename.split('.').pop();
+    const name = filename.split('.').slice(0, -1).join('.');
+    filename = name + Date.now() + '.' + extension;
+    const reference = storage().ref(`blogimages/${filename}`);
+
     setLoading(true);
     try {
-      await axios
-        .post('https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog', {
-          title: blogData.title,
-          category: blogData.category,
-          image,
-          info: blogData.info,
-          location: blogData.location,
-          totalLikes: blogData.totalLikes,
-          createdAt: new Date(),
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      await reference.putFile(image);
+      const url = await reference.getDownloadURL();
+      await firestore().collection('blog').add({
+        title: blogData.title,
+        info: blogData.info,
+        location: blogData.location,
+        image: url,
+        category: blogData.category,
+        totalLikes: blogData.totalLikes,
+        createdAt: new Date(),
+      });
       setLoading(false);
+      console.log('Blog added!');
       navigation.navigate('Profile');
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log(error);
     }
   };
+  const [image, setImage] = useState(null);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -120,15 +140,57 @@ const AddBlogForm = () => {
           />
         </View>
         <Text style={styles.text}>Gambar</Text>
-        <View style={[textInput.cardItem]}>
-          <TextInput
-            placeholder="Image"
-            value={image}
-            onChangeText={text => setImage(text)}
-            placeholderTextColor={'rgba(128, 128, 128, 0.5)'}
-            style={textInput.info}
-          />
-        </View>
+        {image ? (
+          <View style={{position: 'relative'}}>
+            <Image
+              style={{width: '100%', height: 130, borderRadius: 5}}
+              source={{uri: image}}
+            />
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: -5,
+                right: -5,
+                backgroundColor: 'rgb(148, 108, 82)',
+                borderRadius: 25,
+              }}
+              onPress={() => setImage(null)}>
+              <Add
+                size={20}
+                variant="Linear"
+                color={'rgb(255, 255, 255)'}
+                style={{transform: [{rotate: '45deg'}]}}
+              />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity onPress={handleImagePick}>
+            <View
+              style={[
+                textInput.cardItem,
+                {
+                  gap: 10,
+                  paddingVertical: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                },
+              ]}>
+              <AddSquare
+                color={'rgba(128, 128, 128, 0.5)'}
+                variant="Linear"
+                size={42}
+              />
+              <Text
+                style={{
+                  fontFamily: 'Poppins-Regular',
+                  fontSize: 12,
+                  color: 'rgba(128, 128, 128, 0.5)',
+                }}>
+                Upload Thumbnail
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
         <Text style={styles.text}>Kategori</Text>
         <View style={[textInput.cardItem]}>
           <View style={category.container}>

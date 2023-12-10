@@ -18,12 +18,11 @@ import {
   More,
 } from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
-import {ContentList} from '../../../data';
 import {formatNumber} from '../../utils/formatNumber';
 import {formatDate} from '../../utils/formatDate';
-import axios from 'axios';
 import ActionSheet from 'react-native-actions-sheet';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 const KontenDetail = ({route}) => {
   const {blogId} = route.params;
@@ -31,8 +30,8 @@ const KontenDetail = ({route}) => {
     liked: {variant: 'Linear', color: 'rgb(0, 0, 0)'},
     bookmarked: {variant: 'Linear', color: 'rgb(0, 0, 0)'},
   });
-  const [selectedBlog, setSelectedBlog] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedBlog, setSelectedBlog] = useState(null);
 
   const actionSheetRef = useRef(null);
   const openActionSheet = () => {
@@ -43,42 +42,49 @@ const KontenDetail = ({route}) => {
   };
 
   useEffect(() => {
-    getBlogById();
+    const subscriber = firestore()
+      .collection('blog')
+      .doc(blogId)
+      .onSnapshot(documentSnapshot => {
+        const blogData = documentSnapshot.data();
+        if (blogData) {
+          console.log('Blog data: ', blogData);
+          setSelectedBlog(blogData);
+        } else {
+          console.log(`Blog with ID ${blogId} not found.`);
+        }
+      });
+    setLoading(false);
+    return () => subscriber();
   }, [blogId]);
-
-  //fungsi mengambil data
-  const getBlogById = async () => {
-    try {
-      const response = await axios.get(
-        `https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog/${blogId}`,
-      );
-      setSelectedBlog(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const navigateEdit = () => {
     closeActionSheet();
     navigation.navigate('EditBlog', {blogId});
   };
-  //fungsi hapus data
   const handleDelete = async () => {
-    await axios
-      .delete(
-        `https://656b4484dac3630cf727ecb8.mockapi.io/batindapp/blog/${blogId}`,
-      )
-      .then(() => {
-        closeActionSheet();
-        navigation.navigate('Profile');
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    setLoading(true);
+    try {
+      await firestore()
+        .collection('blog')
+        .doc(blogId)
+        .delete()
+        .then(() => {
+          console.log('Blog deleted!');
+        });
+      if (selectedBlog?.image) {
+        const imageRef = storage().refFromURL(selectedBlog?.image);
+        await imageRef.delete();
+      }
+      console.log('Blog deleted!');
+      closeActionSheet();
+      setSelectedBlog(null);
+      setLoading(false);
+      navigation.navigate('Profile');
+    } catch (error) {
+      console.error(error);
+    }
   };
-
-  // const selectedBlog = ContentList.find(blog => blog.id === blogId);
   const navigation = useNavigation();
   const toggleIcon = iconName => {
     setIconStates(prevStates => ({

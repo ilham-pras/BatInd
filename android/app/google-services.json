@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "874174868455",
+    "project_id": "batindapp",
+    "storage_bucket": "batindapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874174868455:android:b1984da21ca101ffdeeb42",
+        "android_client_info": {
+          "package_name": "com.batind"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaD7vBW7H8iqJxeubAQ1IeICh32qCTE80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
