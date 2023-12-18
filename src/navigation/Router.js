@@ -10,6 +10,8 @@ import {
   SplashScreen,
   AddBlogForm,
   EditBlogForm,
+  Register,
+  Login,
 } from '../screens';
 import {Home2, Category2, Star1, User} from 'iconsax-react-native';
 
@@ -104,6 +106,16 @@ const Router = () => {
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
         options={{headerShown: false}}
       />
       <Stack.Screen

@@ -4,7 +4,6 @@ import {
   Text,
   View,
   Image,
-  ImageBackground,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
@@ -23,9 +22,11 @@ import {formatDate} from '../../utils/formatDate';
 import ActionSheet from 'react-native-actions-sheet';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
 
 const KontenDetail = ({route}) => {
   const {blogId} = route.params;
+  const navigation = useNavigation();
   const [iconStates, setIconStates] = useState({
     liked: {variant: 'Linear', color: 'rgb(0, 0, 0)'},
     bookmarked: {variant: 'Linear', color: 'rgb(0, 0, 0)'},
@@ -33,6 +34,7 @@ const KontenDetail = ({route}) => {
   const [loading, setLoading] = useState(true);
   const [selectedBlog, setSelectedBlog] = useState(null);
 
+  const userId = auth().currentUser.uid;
   const actionSheetRef = useRef(null);
   const openActionSheet = () => {
     actionSheetRef.current?.show();
@@ -85,7 +87,7 @@ const KontenDetail = ({route}) => {
       console.error(error);
     }
   };
-  const navigation = useNavigation();
+
   const toggleIcon = iconName => {
     setIconStates(prevStates => ({
       ...prevStates,
@@ -110,13 +112,15 @@ const KontenDetail = ({route}) => {
         </TouchableOpacity>
         <View style={{flexDirection: 'row', justifyContent: 'center', gap: 20}}>
           <Share color={'rgb(255, 255, 255)'} variant="Linear" size={24} />
-          <TouchableOpacity onPress={openActionSheet}>
-            <More
-              color={'rgb(255, 255, 255)'}
-              variant="Linear"
-              style={{transform: [{rotate: '90deg'}]}}
-            />
-          </TouchableOpacity>
+          {userId === selectedBlog?.authorId && (
+            <TouchableOpacity onPress={openActionSheet}>
+              <More
+                color={'rgb(255, 255, 255)'}
+                variant="Linear"
+                style={{transform: [{rotate: '90deg'}]}}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 

@@ -8,12 +8,14 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {ArrowCircleLeft, AddSquare, Add} from 'iconsax-react-native';
 import {useNavigation} from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 const AddBlogForm = () => {
   const handleImagePick = async () => {
@@ -65,6 +67,7 @@ const AddBlogForm = () => {
 
     setLoading(true);
     try {
+      const authorId = auth().currentUser.uid;
       await reference.putFile(image);
       const url = await reference.getDownloadURL();
       await firestore().collection('blog').add({
@@ -75,6 +78,7 @@ const AddBlogForm = () => {
         category: blogData.category,
         totalLikes: blogData.totalLikes,
         createdAt: new Date(),
+        authorId,
       });
       setLoading(false);
       console.log('Blog added!');
@@ -87,149 +91,154 @@ const AddBlogForm = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowCircleLeft
-            color={'rgb(148, 108, 82)'}
-            variant="Linear"
-            size={24}
-          />
-        </TouchableOpacity>
-        <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={styles.title}>Postingan Baru</Text>
-        </View>
-      </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: 12,
-          paddingVertical: 10,
-        }}>
-        <Text style={styles.text}>Judul</Text>
-        <View style={textInput.cardItem}>
-          <TextInput
-            placeholder="Judul"
-            value={blogData.title}
-            onChangeText={text => handleChange('title', text)}
-            placeholderTextColor={'rgba(128, 128, 128, 0.5)'}
-            multiline
-            style={textInput.title}
-          />
-        </View>
-        <Text style={styles.text}>Deskripsi</Text>
-        <View style={[textInput.cardItem, {minHeight: 250}]}>
-          <TextInput
-            placeholder="Deskripsi Batik"
-            value={blogData.info}
-            onChangeText={text => handleChange('info', text)}
-            placeholderTextColor={'rgba(128, 128, 128, 0.5)'}
-            multiline
-            style={textInput.info}
-          />
-        </View>
-        <Text style={styles.text}>Lokasi</Text>
-        <View style={[textInput.cardItem]}>
-          <TextInput
-            placeholder="Lokasi"
-            value={blogData.location}
-            onChangeText={text => handleChange('location', text)}
-            placeholderTextColor={'rgba(128, 128, 128, 0.5)'}
-            multiline
-            style={textInput.info}
-          />
-        </View>
-        <Text style={styles.text}>Gambar</Text>
-        {image ? (
-          <View style={{position: 'relative'}}>
-            <Image
-              style={{width: '100%', height: 130, borderRadius: 5}}
-              source={{uri: image}}
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      enabled>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ArrowCircleLeft
+              color={'rgb(148, 108, 82)'}
+              variant="Linear"
+              size={24}
             />
-            <TouchableOpacity
-              style={{
-                position: 'absolute',
-                top: -5,
-                right: -5,
-                backgroundColor: 'rgb(148, 108, 82)',
-                borderRadius: 25,
-              }}
-              onPress={() => setImage(null)}>
-              <Add
-                size={20}
-                variant="Linear"
-                color={'rgb(255, 255, 255)'}
-                style={{transform: [{rotate: '45deg'}]}}
-              />
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <TouchableOpacity onPress={handleImagePick}>
-            <View
-              style={[
-                textInput.cardItem,
-                {
-                  gap: 10,
-                  paddingVertical: 30,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                },
-              ]}>
-              <AddSquare
-                color={'rgba(128, 128, 128, 0.5)'}
-                variant="Linear"
-                size={42}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Poppins-Regular',
-                  fontSize: 12,
-                  color: 'rgba(128, 128, 128, 0.5)',
-                }}>
-                Upload Thumbnail
-              </Text>
-            </View>
           </TouchableOpacity>
-        )}
-        <Text style={styles.text}>Kategori</Text>
-        <View style={[textInput.cardItem]}>
-          <View style={category.container}>
-            {dataCategory.map((item, index) => {
-              const bgColor =
-                item.id === blogData.category.id
-                  ? 'rgb(148, 108, 82)'
-                  : 'rgba(128, 128, 128, 0.12)';
-              const color =
-                item.id === blogData.category.id
-                  ? 'rgb(255, 255, 255)'
-                  : 'rgb(128, 128, 128)';
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() =>
-                    handleChange('category', {id: item.id, name: item.name})
-                  }
-                  style={[category.item, {backgroundColor: bgColor}]}>
-                  <Text style={[category.name, {color: color}]}>
-                    {item.name}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <Text style={styles.title}>Postingan Baru</Text>
           </View>
         </View>
-      </ScrollView>
-      <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.button} onPress={handleUpload}>
-          <Text style={styles.buttonLabel}>Upload</Text>
-        </TouchableOpacity>
-      </View>
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color={'rgb(148, 108, 82)'} />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+          }}>
+          <Text style={styles.text}>Judul</Text>
+          <View style={textInput.cardItem}>
+            <TextInput
+              placeholder="Judul"
+              value={blogData.title}
+              onChangeText={text => handleChange('title', text)}
+              placeholderTextColor={'rgba(128, 128, 128, 0.5)'}
+              multiline
+              style={textInput.title}
+            />
+          </View>
+          <Text style={styles.text}>Deskripsi</Text>
+          <View style={[textInput.cardItem, {minHeight: 250}]}>
+            <TextInput
+              placeholder="Deskripsi Batik"
+              value={blogData.info}
+              onChangeText={text => handleChange('info', text)}
+              placeholderTextColor={'rgba(128, 128, 128, 0.5)'}
+              multiline
+              style={textInput.info}
+            />
+          </View>
+          <Text style={styles.text}>Lokasi</Text>
+          <View style={[textInput.cardItem]}>
+            <TextInput
+              placeholder="Lokasi"
+              value={blogData.location}
+              onChangeText={text => handleChange('location', text)}
+              placeholderTextColor={'rgba(128, 128, 128, 0.5)'}
+              multiline
+              style={textInput.info}
+            />
+          </View>
+          <Text style={styles.text}>Gambar</Text>
+          {image ? (
+            <View style={{position: 'relative'}}>
+              <Image
+                style={{width: '100%', height: 130, borderRadius: 5}}
+                source={{uri: image}}
+              />
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: -5,
+                  right: -5,
+                  backgroundColor: 'rgb(148, 108, 82)',
+                  borderRadius: 25,
+                }}
+                onPress={() => setImage(null)}>
+                <Add
+                  size={20}
+                  variant="Linear"
+                  color={'rgb(255, 255, 255)'}
+                  style={{transform: [{rotate: '45deg'}]}}
+                />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={handleImagePick}>
+              <View
+                style={[
+                  textInput.cardItem,
+                  {
+                    gap: 10,
+                    paddingVertical: 30,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  },
+                ]}>
+                <AddSquare
+                  color={'rgba(128, 128, 128, 0.5)'}
+                  variant="Linear"
+                  size={42}
+                />
+                <Text
+                  style={{
+                    fontFamily: 'Poppins-Regular',
+                    fontSize: 12,
+                    color: 'rgba(128, 128, 128, 0.5)',
+                  }}>
+                  Upload Thumbnail
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          <Text style={styles.text}>Kategori</Text>
+          <View style={[textInput.cardItem]}>
+            <View style={category.container}>
+              {dataCategory.map((item, index) => {
+                const bgColor =
+                  item.id === blogData.category.id
+                    ? 'rgb(148, 108, 82)'
+                    : 'rgba(128, 128, 128, 0.12)';
+                const color =
+                  item.id === blogData.category.id
+                    ? 'rgb(255, 255, 255)'
+                    : 'rgb(128, 128, 128)';
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() =>
+                      handleChange('category', {id: item.id, name: item.name})
+                    }
+                    style={[category.item, {backgroundColor: bgColor}]}>
+                    <Text style={[category.name, {color: color}]}>
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        </ScrollView>
+        <View style={styles.bottomBar}>
+          <TouchableOpacity style={styles.button} onPress={handleUpload}>
+            <Text style={styles.buttonLabel}>Upload</Text>
+          </TouchableOpacity>
         </View>
-      )}
-    </View>
+        {loading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color={'rgb(148, 108, 82)'} />
+          </View>
+        )}
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

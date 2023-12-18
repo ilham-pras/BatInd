@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: 120,
-    height: 140,
+    height: 120,
     margin: 10,
     borderRadius: 10,
     resizeMode: 'cover',

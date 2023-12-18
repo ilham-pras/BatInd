@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,27 +21,68 @@ import {ItemList} from '../../components';
 import {ProfileData} from '../../../data';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [blogData, setBlogData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [profileData, setProfileData] = useState(null);
   useEffect(() => {
-    const subscriber = firestore()
-      .collection('blog')
-      .onSnapshot(querySnapshot => {
-        const blogs = [];
-        querySnapshot.forEach(documentSnapshot => {
-          blogs.push({
-            ...documentSnapshot.data(),
-            id: documentSnapshot.id,
+    const user = auth().currentUser;
+    const fetchBlogData = () => {
+      try {
+        if (user) {
+          const userId = user.uid;
+          const blogCollection = firestore().collection('blog');
+          const query = blogCollection.where('authorId', '==', userId);
+          const unsubscribeBlog = query.onSnapshot(querySnapshot => {
+            const blogs = querySnapshot.docs.map(doc => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            setBlogData(blogs);
+            setLoading(false);
           });
-        });
-        setBlogData(blogs);
-        setLoading(false);
-      });
-    return () => subscriber();
+
+          return () => {
+            unsubscribeBlog();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching blog data:', error);
+      }
+    };
+
+    const fetchProfileData = () => {
+      try {
+        const user = auth().currentUser;
+        if (user) {
+          const userId = user.uid;
+          const userRef = firestore().collection('users').doc(userId);
+
+          const unsubscribeProfile = userRef.onSnapshot(doc => {
+            if (doc.exists) {
+              const userData = doc.data();
+              setProfileData(userData);
+              fetchBlogData();
+            } else {
+              console.error('Dokumen pengguna tidak ditemukan.');
+            }
+          });
+
+          return () => {
+            unsubscribeProfile();
+          };
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+    fetchBlogData();
+    fetchProfileData();
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -62,6 +103,15 @@ const Profile = () => {
       setRefreshing(false);
     }, 1500);
   }, []);
+  const handleLogout = async () => {
+    try {
+      await auth().signOut();
+      await AsyncStorage.removeItem('userData');
+      navigation.replace('Login');
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -76,10 +126,10 @@ const Profile = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
           <View style={profile.cardProfile}>
-            <Image style={profile.pic} source={ProfileData.profilePict} />
-            <View>
-              <Text style={profile.text}>{ProfileData.name}</Text>
-              <Text style={profile.info}>{ProfileData.email}</Text>
+            <Image style={profile.pic} source={{uri: profileData?.photoUrl}} />
+            <View style={{paddingLeft: 20}}>
+              <Text style={profile.text}>{profileData?.fullName}</Text>
+              <Text style={profile.info}>{profileData?.email}</Text>
             </View>
           </View>
           <TouchableOpacity style={profile.editProfile}>
@@ -128,7 +178,7 @@ const Profile = () => {
               </View>
               <Text style={profile.text}>Pengaturan</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardContent}>
+            <TouchableOpacity style={styles.cardContent} onPress={handleLogout}>
               <View style={{paddingRight: 16}}>
                 <LogoutCurve
                   color={'rgb(148, 108, 82)'}
@@ -234,7 +284,7 @@ const profile = StyleSheet.create({
   },
   cardProfile: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: 28,

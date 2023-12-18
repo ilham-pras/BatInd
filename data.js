@@ -6,7 +6,7 @@ export const ContentList = [
     createdAt: 'Aug 18, 2023',
     category: 'Parang',
     location: 'Yogyakarta ',
-    totalLikes:5800,
+    totalLikes: 5800,
     image: require('./src/assets/img/parang-barong.jpg'),
   },
   {
@@ -16,7 +16,7 @@ export const ContentList = [
     createdAt: 'May 10, 2023',
     category: 'Cuwiri',
     location: 'Surakarta ',
-    totalLikes:1500,
+    totalLikes: 1500,
     image: require('./src/assets/img/cuwiri.jpg'),
   },
   {
@@ -26,7 +26,7 @@ export const ContentList = [
     createdAt: 'Sep 26, 2023',
     category: 'Sekar Jagad',
     location: 'Jawa Tengah ',
-    totalLikes:2300,
+    totalLikes: 2300,
     image: require('./src/assets/img/sekar-jagad.jpg'),
   },
   {
@@ -36,7 +36,7 @@ export const ContentList = [
     createdAt: 'Sep 02, 2023',
     category: 'Lasem',
     location: 'Jawa Tengah',
-    totalLikes:3110,
+    totalLikes: 3110,
     image: require('./src/assets/img/lasem-phoenix.jpg'),
   },
   {
@@ -46,7 +46,7 @@ export const ContentList = [
     createdAt: 'May 12, 2023',
     category: 'Sogan',
     location: 'Solo ',
-    totalLikes:2600,
+    totalLikes: 2600,
     image: require('./src/assets/img/sogan-pamiluto.jpg'),
   },
   {
@@ -56,7 +56,7 @@ export const ContentList = [
     createdAt: 'Feb 18, 2023',
     category: 'Megamendung',
     location: 'Cirebon ',
-    totalLikes:3200,
+    totalLikes: 3200,
     image: require('./src/assets/img/megamendung-bunga.jpg'),
   },
 ];
